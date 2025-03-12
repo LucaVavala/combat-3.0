@@ -20,6 +20,12 @@ function getNextNpcId() {
 }
 
 /*===================================
+  Global Modal Variable
+===================================*/
+// Declare once for modal functionality
+let currentNpcIdModal = null;
+
+/*===================================
   DOM Elements
 ===================================*/
 const pcList = document.getElementById('pcList');
@@ -72,6 +78,7 @@ function renderStatRow(label, statValue, id, statKey) {
 }
 
 function populateFeaturedTemplateDropdown() {
+  // Assumes featuredTemplates is defined in database.js
   featuredTemplateSelect.innerHTML = '<option value="" disabled selected>Select Template</option>';
   for (const key in featuredTemplates) {
     if (featuredTemplates.hasOwnProperty(key)) {
@@ -158,7 +165,7 @@ function updateNpcList() {
         });
         cardHTML += `</ul></div>`;
       }
-      // Display schticks (bold only the title before the colon)
+      // Display schticks with only the title (before the colon) bolded
       if (npc.schticks && npc.schticks.length > 0) {
         cardHTML += `<div class="schtickList"><h4>Schticks:</h4><ul>`;
         npc.schticks.forEach(schtick => {
@@ -223,6 +230,11 @@ function updateAttackDropdowns() {
 /*===================================
   Modal Panel for Database Items
 ===================================*/
+const dbPanel = document.getElementById('dbPanel');
+const dbClose = document.getElementById('dbClose');
+const weaponListDB = document.getElementById('weaponListDB');
+const schtickListDB = document.getElementById('schtickListDB');
+
 function openDBPanel(npcId) {
   currentNpcIdModal = npcId;
   // Populate weapons list
@@ -237,7 +249,7 @@ function openDBPanel(npcId) {
     });
     weaponListDB.appendChild(li);
   });
-  // Populate schticks list
+  // Populate schticks list (bold only the title before the colon)
   schtickListDB.innerHTML = '';
   schtickDatabase.forEach(item => {
     const li = document.createElement('li');
@@ -295,7 +307,7 @@ window.addEventListener('click', (e) => {
 });
 
 /*===================================
-  Attach Event Listeners for PCs and NPCs
+  Event Listeners for PCs and NPCs
 ===================================*/
 function attachPcListeners() {
   document.querySelectorAll('.incAttack').forEach(btn => {
@@ -309,10 +321,10 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.attack--; if(pc.attack < 0) pc.attack = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Attack to ${pc.attack}`); }
+      if (pc) { pc.attack--; if (pc.attack < 0) pc.attack = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Attack to ${pc.attack}`); }
     });
   });
-  // (Similar event listeners for backup attack, defense, toughness, speed, fortune and wound points)
+  // Repeat similar listeners for backupAttack, defense, toughness, speed, fortune, and woundPoints...
   document.querySelectorAll('.incBackupAttack').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
@@ -324,7 +336,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc && pc.backupAttack !== undefined) { pc.backupAttack--; if(pc.backupAttack < 0) pc.backupAttack = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Backup Attack to ${pc.backupAttack}`); }
+      if (pc && pc.backupAttack !== undefined) { pc.backupAttack--; if (pc.backupAttack < 0) pc.backupAttack = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Backup Attack to ${pc.backupAttack}`); }
     });
   });
   document.querySelectorAll('.incDefense').forEach(btn => {
@@ -338,7 +350,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.defense--; if(pc.defense < 0) pc.defense = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Defense to ${pc.defense}`); }
+      if (pc) { pc.defense--; if (pc.defense < 0) pc.defense = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Defense to ${pc.defense}`); }
     });
   });
   document.querySelectorAll('.incToughness').forEach(btn => {
@@ -352,7 +364,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.toughness--; if(pc.toughness < 0) pc.toughness = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Toughness to ${pc.toughness}`); }
+      if (pc) { pc.toughness--; if (pc.toughness < 0) pc.toughness = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Toughness to ${pc.toughness}`); }
     });
   });
   document.querySelectorAll('.incSpeed').forEach(btn => {
@@ -366,7 +378,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.speed--; if(pc.speed < 0) pc.speed = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Speed to ${pc.speed}`); }
+      if (pc) { pc.speed--; if (pc.speed < 0) pc.speed = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Speed to ${pc.speed}`); }
     });
   });
   document.querySelectorAll('.incFortune').forEach(btn => {
@@ -380,7 +392,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.fortune--; if(pc.fortune < 0) pc.fortune = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Fortune to ${pc.fortune}`); }
+      if (pc) { pc.fortune--; if (pc.fortune < 0) pc.fortune = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Fortune to ${pc.fortune}`); }
     });
   });
   document.querySelectorAll('.incWound').forEach(btn => {
@@ -394,7 +406,7 @@ function attachPcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const pc = pcs.find(pc => pc.id === id);
-      if (pc) { pc.woundPoints--; if(pc.woundPoints < 0) pc.woundPoints = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Wound Points to ${pc.woundPoints}`); }
+      if (pc) { pc.woundPoints--; if (pc.woundPoints < 0) pc.woundPoints = 0; updatePcList(); logEvent(`Decreased ${pc.name}'s Wound Points to ${pc.woundPoints}`); }
     });
   });
 }
@@ -418,10 +430,10 @@ function attachNpcListeners() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.id, 10);
       const npc = npcs.find(npc => npc.id === id);
-      if (npc) { npc.attack--; if(npc.attack < 0) npc.attack = 0; updateNpcList(); logEvent(`Decreased ${npc.name}'s Attack to ${npc.attack}`); }
+      if (npc) { npc.attack--; if (npc.attack < 0) npc.attack = 0; updateNpcList(); logEvent(`Decreased ${npc.name}'s Attack to ${npc.attack}`); }
     });
   });
-  // (Ensure similar listeners exist for the remaining NPC stat buttons)
+  // (Repeat similar listeners for other NPC stat buttons as needed.)
 }
 
 function updateAttackDropdowns() {
@@ -460,8 +472,13 @@ function updateAttackDropdowns() {
 }
 
 /*===================================
-  Modal Panel Functions
+  Modal Panel for Database Items
 ===================================*/
+const dbPanel = document.getElementById('dbPanel');
+const dbClose = document.getElementById('dbClose');
+const weaponListDB = document.getElementById('weaponListDB');
+const schtickListDB = document.getElementById('schtickListDB');
+
 function openDBPanel(npcId) {
   currentNpcIdModal = npcId;
   // Populate weapons list
@@ -476,7 +493,7 @@ function openDBPanel(npcId) {
     });
     weaponListDB.appendChild(li);
   });
-  // Populate schticks list
+  // Populate schticks list (bold only the title before the colon)
   schtickListDB.innerHTML = '';
   schtickDatabase.forEach(item => {
     const li = document.createElement('li');
